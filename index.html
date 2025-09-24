@@ -1,52 +1,492 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!doctype html>
+<html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Холпен: Путь Плова — легенда о плове, дружбе и предательстве</title>
-    <meta name="description" content="Холпен: Путь Плова. Сайт с историей Холпена, Полины и плова!" />
-    <link rel="canonical" href="https://pupsike.xyz/" />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#18181b" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiniApp — Читальня історій</title>
 
-    <!-- Open Graph / Twitter for SEO -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Холпен: Путь Плова. Сайт с историей Холпена, Полины и плова!" />
-    <meta property="og:description" content="Холпен: Путь Плова. Эпическая история о плове, дружбе и предательстве. Легенда, где даже ванна становится оружием. Плов решает во всем мире!" />
-    <meta property="og:url" content="https://pupsike.xyz/" />
-    <meta property="og:image" content="https://pupsike.xyz/src/images/icon.jpg" />
-    <meta property="og:locale" content="ru_RU" />
+  <!-- Tailwind (play CDN for quick use). For production replace with built CSS. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Холпен: Путь Плова. Сайт с историей Холпена, Полины и плова!" />
-    <meta name="twitter:description" content="Холпен: Путь Плова. Эпическая история о плове, дружбе и предательстве. Легенда, где даже ванна становится оружием. Плов решает во всем мире!" />
-    <meta name="twitter:image" content="https://pupsike.xyz/src/images/icon.jpg" />
+  <!-- Google Analytics (replace G-XXXXXXXXXX with your GA4 measurement ID) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMCN91MSXZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-XMCN91MSXZ');
+    </script>
 
-    <!-- Favicon -->
-    <link rel="icon" href="./src/images/icon.jpg" />
-
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    :root{ --accent:#60a5fa; --muted:#94a3b8 }
+    body{ font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+    .drop-fade{ transition: all .25s cubic-bezier(.2,.9,.3,1); }
+    .paper { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+    /* nice large excerpt style */
+    .chapter-text p{ line-height:1.7; margin-bottom:1rem }
+  </style>
 </head>
-<body class="min-h-screen bg-zinc-950">
-    <main class="flex-1 max-w-7xl mx-auto px-8 py-4">
-        <div class="flex flex-col justify-center min-h-screen text-center">
-            <h1 class="text-base md:text-2xl text-yellow-200 font-bold font-sans tracking-tight">Холпен: Путь Плова — легенда о плове, дружбе и предательстве</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                <a href="#" class="flex flex-col gap-2 px-6 py-10 text-start rounded-lg border border-gray-600 bg-[url('./src/images/animebg.jpg')] bg-cover bg-center bg-no-repeat grayscale-[0.6] transition duration-[400ms] ease-in-out hover:scale-110 hover:grayscale-0">
-                    <h2 class="text-lg md:text-xl text-white font-extrabold tracking-tight">Аниме</h2>
-                    <p class="text-sm md:text-base text-gray-100 font-semibold tracking-tight">Будет доступно в 2026 году...</p>
-                </a>
-                <a href="https://pupsike.xyz/htmls/manga/index.html" class="flex flex-col gap-2 px-6 py-10 text-start rounded-lg border border-gray-600 bg-[url('./src/images/mangabg.png')] bg-cover bg-center bg-no-repeat grayscale-[0.6] transition duration-[400ms] ease-in-out hover:scale-110 hover:grayscale-0">
-                    <h2 class="text-lg md:text-xl text-white font-extrabold tracking-tight">История (Манга)</h2>
-                    <p class="text-sm md:text-base text-gray-100 font-semibold tracking-tight">Нажмите по данному блоку, чтобы перейти и читать историю</p>
-                </a>
-            </div>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+
+  <div id="app" class="min-h-screen flex flex-col items-center py-6 px-4">
+
+    <!-- Top bar (Telegram WebApp integration shows title and can use WebApp.BackButton) -->
+    <header class="w-full max-w-4xl mb-6 z-40">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div id="logo" class="w-12 h-12 rounded-2xl bg-white/5 p-2 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white/80" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6v12a2 2 0 0 0 2 2h14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 6V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div class="text-sm text-slate-300">Читальня історій</div>
+            <div class="text-xs text-slate-400">Арка 1 — "Секретний проект"</div>
+          </div>
         </div>
+
+        <div class="flex items-center gap-2">
+          <button id="toggleTheme" class="drop-fade rounded-xl px-3 py-2 text-sm bg-white/5">Нічний режим</button>
+          <button id="settingsBtn" class="drop-fade rounded-xl px-3 py-2 text-sm bg-white/5">Налаштування</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main reading card -->
+    <main class="w-full max-w-4xl flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Left: Table of contents / controls -->
+      <aside class="md:col-span-1 sticky top-6 self-start">
+        <div class="paper rounded-2xl p-4 shadow-lg border border-white/3">
+          <h3 class="font-semibold text-lg">Зміст</h3>
+          <p class="text-sm text-slate-400 mt-1">Виберіть розділ або швидко переміщайтесь</p>
+
+          <nav class="mt-4 flex flex-col gap-2">
+            <button class="chapter-button text-left p-3 rounded-xl bg-white/3 hover:bg-white/5" data-arc="1" data-chapter="1">Арка 1 — Глава 1: Секретний проект</button>
+            <!-- можете додавати інші розділи тут -->
+          </nav>
+
+          <div class="mt-4 border-t border-white/5 pt-4 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-slate-300">Розмір шрифту</div>
+              <div class="flex gap-2">
+                <button id="decFont" class="px-3 py-1 rounded bg-white/5">-</button>
+                <button id="incFont" class="px-3 py-1 rounded bg-white/5">+</button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-slate-300">Режим читання</div>
+              <select id="readingMode" class="bg-white/5 text-sm rounded px-2 py-1">
+                <option value="normal">Нормальний</option>
+                <option value="focus">Фокус (текст по центру)</option>
+              </select>
+            </div>
+
+            <div class="pt-2">
+              <button id="bookmarkBtn" class="w-full rounded-xl py-2 font-semibold bg-gradient-to-r from-indigo-500 to-sky-400">Зберегти позицію</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-4 text-sm text-slate-400">Прогрес читання</div>
+        <div class="w-full bg-white/5 rounded-xl h-3 overflow-hidden">
+          <div id="progressBar" class="h-3 bg-gradient-to-r from-indigo-500 to-sky-400 w-0"></div>
+        </div>
+      </aside>
+
+      <!-- Center: Story area -->
+      <section class="md:col-span-2">
+        <article id="chapterCard" class="paper rounded-3xl p-8 shadow-2xl border border-white/3">
+          <header class="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <h1 id="chapterTitle" class="font-display text-3xl font-extrabold tracking-tight text-slate-100">Глава 1 — Секретний проект</h1>
+              <p id="chapterSubtitle" class="mt-1 text-slate-300">Арка 1 — Початок</p>
+            </div>
+            <div class="text-right">
+              <div class="text-sm text-slate-400">Час читання: <span id="readTime"> ~6 хв</span></div>
+              <div class="mt-2 flex gap-2">
+                <button id="prevBtn" class="px-3 py-2 rounded-xl bg-white/5">Попередня</button>
+                <button id="nextBtn" class="px-3 py-2 rounded-xl bg-white/5">Наступна</button>
+              </div>
+            </div>
+          </header>
+
+          <div id="chapterBody" class="chapter-text text-lg leading-relaxed text-slate-100"></div>
+
+          <footer class="mt-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <button id="shareBtn" class="rounded-full px-4 py-2 bg-white/5">Поділитись</button>
+              <button id="sendToBot" class="rounded-full px-4 py-2 bg-white/5">Повідомити боту</button>
+            </div>
+            <div class="text-sm text-slate-400">Збережено: <span id="savedPos">—</span></div>
+          </footer>
+        </article>
+      </section>
     </main>
+
+    <!-- Floating quick actions -->
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+      <button id="openTgBtn" class="rounded-full px-4 py-3 shadow-2xl bg-gradient-to-r from-pink-500 to-amber-400">Відкрити в Telegram</button>
+    </div>
+
+    <!-- Modal: Settings -->
+    <div id="settingsModal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-50">
+      <div class="bg-slate-900/95 rounded-2xl p-6 w-full max-w-lg">
+        <h3 class="text-lg font-semibold">Налаштування</h3>
+        <div class="mt-4 grid grid-cols-2 gap-4">
+          <label class="text-sm text-slate-300">Шрифт</label>
+          <select id="fontSelect" class="bg-white/5 rounded px-2 py-1">
+            <option value="inter">Inter (читабельний)</option>
+            <option value="playfair">Playfair (літературний)</option>
+          </select>
+
+          <label class="text-sm text-slate-300">Швидкість прокрутки</label>
+          <input id="scrollSpeed" type="range" min="1" max="10" value="5">
+        </div>
+        <div class="mt-6 flex justify-end gap-2">
+          <button id="closeSettings" class="px-4 py-2 rounded bg-white/5">Готово</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // === Demo data: вставте сюди всю історію або підвантажуйте з бекенду ===
+    const book = {
+      "title":"Секретний проект",
+      "arcs": [
+        {
+          "arcId":1,
+          "title":"Арка 1",
+          "chapters":[
+            {
+              "chapterId":1,
+              "title":"Глава 1 — Секретний проект",
+              "subtitle":"Початок",
+              "content":`<p>Шуууу... Шуууу... Шуууу... Шуууу... Шуууу...<br>
+Шуууу... Шуууу... Шуууу... Шуууу... ШУУУУ!!!</p>
+
+<p>(Скрип двери)<br>
+(топ-топ-топ-топ)</p>
+
+<p><strong>Харуки:</strong><br>
+Привет, мам!</p>
+
+<p><strong>Юдзуки:</strong><br>
+Привет, Харуки. Как у тебя дела? Не замёрз на улице?</p>
+
+<p><strong>Харуки:</strong><br>
+Чуть чуть подзамерз, но так все хорошо.<br>
+Я слышал, в деревне появился какой-то старик. Говорят, он знает, почему у нас вечная зима...</p>
+
+<p><strong>Юдзуки:</strong><br>
+(резкий вдох, её улыбка исчезает)<br>
+Харуки...<br>
+Это всё только слухи... Никто не знает, почему зима никогда не кончается.<br>
+Она была здесь... всегда.</p>
+
+<p><strong>Харуки:</strong><br>
+(замолкает на секунду, смотрит на неё)<br>
+Мама...<br>
+С тобой всё в порядке?</p>
+
+<p><strong>Юдзуки:</strong><br>
+(улыбка снова появляется у нее на лице)<br>
+Да Харуки все хорошо не волнуйся. Просто ты так усердно пробуешь найти ответ, но это бесмысленно.<br>
+Зима всегда была у нас в городе.</p>
+
+<p><strong>Харуки:</strong><br>
+(громко и неуверено говорит)<br>
+Но, я хочу найти ответ... Он обязан быть...</p>
+
+<p><strong>Юдзуки:</strong><br>
+Если тебе это так важно, то можешь продолжать искать ответ.</p>
+
+<p><strong>Харуки:</strong><br>
+(спокойно и ласково говорит)<br>
+Спасибо, мама. Я пойду погуляю немного на улице и сразу домой.</p>
+
+<p><strong>Юдзуки:</strong><br>
+(нежным голосом)<br>
+Хорошо, только оденься потеплее!</p>
+
+<p>Спустя некоторое время...</p>
+
+<p><strong>Харуки:</strong><br>
+(увереным голосом)<br>
+Мне надо найти этого старца. Он точно знает ответ на этот вопрос...</p>
+
+<p><strong>Старец:</strong><br>
+(Подходить сзади и ложит руку на плече Харуки)<br>
+Вы случаем не меня ищете молодой человек?</p>
+
+<p><strong>Харуки:</strong><br>
+(громко крича)<br>
+ААААА! Вы кто?</p>
+
+<p><strong>Старец:</strong><br>
+Не пугайтесь. Я - тот самый старик, о котором ты слышал.<br>
+Меня зовут - Куон.</p>
+
+<p><strong>Харуки:</strong><br>
+(думает: "Что? Как он знает что я про него слышал? Кто он...")<br>
+Здравствуйте. Меня зовут Харуки. Простите, обычно я так не реагирую... Вы просто неожиданно подошли.<br>
+Можно к вам обращаться просто Куон?</p>
+
+<p><strong>Старец:</strong><br>
+Да можно не волнуйся Харуки, все в порядке.<br>
+Пошли присядем на вон ту лавочку и я тебе все расскажу.</p>
+
+<p><strong>Харуки:</strong><br>
+Пойдемте!<br>
+(думает: "Как он меня нашел? Откуда тут лавочка её же не было...")</p>
+
+<p><strong>Старец:</strong><br>
+Присаживайся Харуки. Я так понимаю ты хочешь узнать почему в этом городе вечная зима.<br>
+Верно?</p>
+
+<p><strong>Харуки:</strong><br>
+Да! Именно этот вопрос мне не дает покоя. Почему зима вечная и неужели она была тут всегда как говорит моя мама?</p>
+
+<p><strong>Старец:</strong><br>
+Твоя мама всю её жизнь старалась уберегать тебя от правды.<br>
+Все жители города знают ответ, но не могут его никому рассказывать.<br>
+Твоя мама и в правду почти всю жизнь жила в зиме, но зима началась когда ей было 7 лет,<br>
+а до этого было все как у всех.<br>
+Зима сменялась весной, весная летом, лето осенью, а осень зимой.</p>
+
+<p><strong>Харуки:</strong><br>
+А чего они бояться? Что произойдет если они расскажут?<br>
+(думает: "Не ужели моя мама всю жизнь мне врала?")</p>
+
+<p><strong>Старец:</strong><br>
+Я не знаю чего они бояться. Я был частью их, но я не боюсь рассказать что тут происходило.<br>
+Мама твоя тебе врала во благо. Она хотела тебя защитить и все.</p>
+
+<p><strong>Харуки:</strong><br>
+От чего она хочет меня защитить?<br>
+Что тут произошло? Раскажи Куон.</p>
+
+<p><strong>Старец:</strong><br>
+Иди домой и пусть твоя мама расскажет всю правду. А мне уже пора.<br>
+(Старец начинает распадаться на части и улетать)</p>
+
+<p><strong>Харуки:</strong><br>
+(Харуки сидит в шоке)<br>
+Что? Куон вы куда пропадаете?</p>
+
+<p><strong>Старец:</strong><br>
+Мне уже пора сынок, а ты иди домой.</p>
+
+<p>Харуки начинает бежать домой.<br>
+Харуки:<br>
+(думает: что тут вообще происходит? Что мама от меня скрывает? Куда Куон пропал?)<br>
+Это сейчас не важно надо просто добежать домой и все.</p>
+
+<p>(Скрипит входная дверь)</p>
+
+<p><strong>Юдзуки:</strong><br>
+Харуки ты так быстро погулял?</p>
+
+<p><strong>Харуки:</strong><br>
+Мама... Я встретил старца и он рассказал, что ты меня обманываешь...<br>
+Он сказал все бояться чего-то или кого-то и скрывают правду почему у нас зима.<br>
+Почему ты все это время знала, но не говорила мне?<br>
+(Начинает плакать)</p>
+
+<p><strong>Юдзуки:</strong><br>
+Харуки... Я тебе все это время врала, чтобы защитить тебя от этого всего...</p>
+
+<p><strong>Харуки:</strong><br>
+(Весь заплаканый)<br>
+От чего меня защитить?</p>
+
+<p><strong>Юдзуки:</strong><br>
+(В страхе и громко говорит)<br>
+Харуки слушай внимательно! От сегодня ты стал взрослым и если хочешь найти ответ,<br>
+то под полом если подвал он закрыт на ключ. Ключ лежит в сейфе в стене.<br>
+Я его спрятала, чтобы его никто никогда не нашел. Ключ от сейфа прям в нем.<br>
+Сам сейф находиться на кухне со стороны шкафчиков. В стене. Если кто-то спросит что за ключ у тебя.<br>
+То скажешь его официальное название... (Мама начала дрожать от страха). Его официальное название -<br>
+Йоакэ но Каги.</p>
+
+<p><strong>Харуки:</strong><br>
+Что это все значит мама?</p>
+
+<p>(Глухой взрыв)<br>
+Харука стоит весь в крови и сильно открытыми глазами.<br>
+Его мать разорвалась на мельчайшие части...</p>`
+            }
+          ]
+        }
+      ]
+    };
+
+    // === UI state ===
+    let state = { arcIndex:0, chapterIndex:0, fontSize:18 };
+
+    // Initialize
+    const chapterBody = document.getElementById('chapterBody');
+    const chapterTitle = document.getElementById('chapterTitle');
+    const chapterSubtitle = document.getElementById('chapterSubtitle');
+    const progressBar = document.getElementById('progressBar');
+    const savedPos = document.getElementById('savedPos');
+
+    function renderChapter(arcIdx=0, chapIdx=0){
+      const ch = book.arcs[arcIdx].chapters[chapIdx];
+      chapterTitle.innerText = ch.title;
+      chapterSubtitle.innerText = ch.subtitle || '';
+      chapterBody.innerHTML = ch.content;
+      document.documentElement.style.setProperty('--reader-font-size', state.fontSize + 'px');
+      chapterBody.style.fontSize = state.fontSize + 'px';
+      updateProgress();
+      estimateTime();
+      loadSavedPosition();
+    }
+
+    function estimateTime(){
+      const text = chapterBody.innerText || '';
+      const words = text.split(/\s+/).filter(Boolean).length;
+      const minutes = Math.max(1, Math.round(words / 200));
+      document.getElementById('readTime').innerText = `~${minutes} хв`;
+    }
+
+    function updateProgress(){
+      const total = chapterBody.scrollHeight - chapterBody.clientHeight;
+      const pos = chapterBody.scrollTop || 0;
+      const pct = total <= 0 ? 0 : Math.min(100, Math.round((pos/total)*100));
+      progressBar.style.width = pct + '%';
+    }
+
+    // font controls
+    document.getElementById('incFont').addEventListener('click',()=>{ state.fontSize = Math.min(28, state.fontSize+2); renderChapter(state.arcIndex, state.chapterIndex);});
+    document.getElementById('decFont').addEventListener('click',()=>{ state.fontSize = Math.max(12, state.fontSize-2); renderChapter(state.arcIndex, state.chapterIndex);});
+
+    // TOC buttons
+    document.querySelectorAll('.chapter-button').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        const arc = parseInt(btn.dataset.arc)-1;
+        const ch = parseInt(btn.dataset.chapter)-1;
+        state.arcIndex = arc; state.chapterIndex = ch;
+        renderChapter(arc,ch);
+      })
+    });
+
+    // reading mode
+    document.getElementById('readingMode').addEventListener('change',(e)=>{
+      const val = e.target.value;
+      if(val === 'focus'){
+        document.getElementById('chapterCard').classList.add('mx-auto','max-w-2xl');
+      } else {
+        document.getElementById('chapterCard').classList.remove('mx-auto','max-w-2xl');
+      }
+    });
+
+    // bookmark/save
+    document.getElementById('bookmarkBtn').addEventListener('click', ()=>{
+      const key = `reader.pos.${book.title}.a${state.arcIndex}.c${state.chapterIndex}`;
+      const pos = chapterBody.scrollTop || 0;
+      const data = {pos, time: Date.now()};
+      localStorage.setItem(key, JSON.stringify(data));
+      savedPos.innerText = new Date(data.time).toLocaleString();
+      // analytics event
+      if(window.gtag) gtag('event','bookmark',{book:book.title,arc:state.arcIndex+1,chapter:state.chapterIndex+1});
+    });
+
+    function loadSavedPosition(){
+      const key = `reader.pos.${book.title}.a${state.arcIndex}.c${state.chapterIndex}`;
+      const raw = localStorage.getItem(key);
+      if(raw){
+        const d = JSON.parse(raw);
+        chapterBody.scrollTop = d.pos;
+        savedPos.innerText = new Date(d.time).toLocaleString();
+      } else savedPos.innerText = '—';
+      updateProgress();
+    }
+
+    // on scroll update progress
+    chapterBody.addEventListener('scroll', ()=>{
+      updateProgress();
+    });
+
+    // prev / next
+    document.getElementById('prevBtn').addEventListener('click', ()=>{
+      if(state.chapterIndex > 0){ state.chapterIndex--; renderChapter(state.arcIndex, state.chapterIndex);} 
+      else alert('Це перша глава');
+    });
+    document.getElementById('nextBtn').addEventListener('click', ()=>{
+      const arc = book.arcs[state.arcIndex];
+      if(state.chapterIndex < arc.chapters.length-1){ state.chapterIndex++; renderChapter(state.arcIndex, state.chapterIndex); }
+      else alert('Це остання доступна глава у цій арці');
+    });
+
+    // share -> use Telegram WebApp if available
+    document.getElementById('shareBtn').addEventListener('click', ()=>{
+      const snippet = book.arcs[state.arcIndex].chapters[state.chapterIndex].title + ' — ' + (chapterBody.innerText.slice(0,200)) + '...';
+      if(window.Telegram && Telegram.WebApp){
+        // send data back to bot
+        Telegram.WebApp.sendData(JSON.stringify({type:'share',text:snippet}));
+      } else {
+        navigator.clipboard.writeText(snippet).then(()=> alert('Текст скопійовано в буфер обміну'));
+      }
+      if(window.gtag) gtag('event','share',{method: window.Telegram && Telegram.WebApp ? 'telegram_webapp' : 'clipboard'});
+    });
+
+    // sendToBot -> explicit send
+    document.getElementById('sendToBot').addEventListener('click', ()=>{
+      if(window.Telegram && Telegram.WebApp){
+        Telegram.WebApp.sendData(JSON.stringify({type:'notify_read',arc:state.arcIndex+1,chapter:state.chapterIndex+1}));
+        alert('Дані відправлено боту');
+      } else alert('Не в WebApp середовищі. Відкрийте через Telegram.');
+    });
+
+    // settings modal
+    document.getElementById('settingsBtn').addEventListener('click', ()=> document.getElementById('settingsModal').classList.remove('hidden'));
+    document.getElementById('closeSettings').addEventListener('click', ()=> document.getElementById('settingsModal').classList.add('hidden'));
+
+    document.getElementById('fontSelect').addEventListener('change',(e)=>{
+      if(e.target.value === 'playfair') chapterBody.style.fontFamily = "'Playfair Display', serif"; else chapterBody.style.fontFamily = "'Inter', system-ui, sans-serif";
+    });
+
+    // open in Telegram button
+    document.getElementById('openTgBtn').addEventListener('click', ()=>{
+      if(window.Telegram && Telegram.WebApp){
+        Telegram.WebApp.openTelegramLink(window.location.href);
+      } else {
+        // offer instructions
+        alert('Щоб відкрити цю сторінку як Mini App у Telegram: потрібно замостити цей URL у вашому боті як web_app кнопку (див. інструкції).');
+      }
+    });
+
+    // theme toggle
+    let night = true;
+    document.getElementById('toggleTheme').addEventListener('click', ()=>{
+      night = !night;
+      if(night){ document.body.classList.replace('bg-white','bg-gradient-to-br'); } else { document.body.classList.replace('bg-gradient-to-br','bg-white'); }
+    });
+
+    // Telegram WebApp initialization (graceful)
+    (function initTelegram(){
+      if(window.Telegram && Telegram.WebApp){
+        try{
+          Telegram.WebApp.ready();
+          Telegram.WebApp.MainButton.setText('Закрити');
+          Telegram.WebApp.MainButton.show();
+          Telegram.WebApp.onEvent('mainButtonClicked', ()=> Telegram.WebApp.close());
+        }catch(e){console.warn('tg init err',e)}
+      }
+    })();
+
+    // initial render
+    renderChapter(0,0);
+
+    // small analytics ping to GA when chapter loaded
+    if(window.gtag) gtag('event','chapter_view',{book:book.title,arc:1,chapter:1});
+
+  </script>
 </body>
 </html>
-
